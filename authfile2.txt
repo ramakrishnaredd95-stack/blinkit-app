@@ -1,4 +1,0 @@
-Username: admin_user124
-Password: secure_pass_2024
-Access_Level: Administrator
-Last_Login: 2024-01-15T10:30:00
