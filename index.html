@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Blinkit — Web Dashboard</title>
+    <style>
+        :root{
+            --bg:#0f1724; --card:#0b1220; --muted:#97a0b2; --accent:#00c853; --glass: rgba(255,255,255,0.03);
+            --sidebar:#071021; --text:#e6eef8;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%;margin:0;background:linear-gradient(180deg,#071126 0%, #071621 60%);color:var(--text)}
+        .app{display:flex;min-height:100vh}
+        .sidebar{
+            width:260px;background:linear-gradient(180deg,var(--sidebar),#041021 120%);
+            padding:20px;display:flex;flex-direction:column;gap:18px;
+        }
+        .brand{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+        .logo{width:40px;height:40px;background:linear-gradient(135deg,#00c853,#00a2ff);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#022; font-weight:700}
+        .nav{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+        .nav button{background:transparent;border:0;color:var(--muted);padding:10px 12px;border-radius:8px;display:flex;gap:12px;align-items:center;cursor:pointer;text-align:left}
+        .nav button.active, .nav button:hover{background:var(--glass);color:var(--text)}
+        .nav svg{width:18px;height:18px;opacity:.95}
+        .spacer{flex:1}
+        .user{display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent)}
+        .avatar{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#00a2ff,#00c853);display:flex;align-items:center;justify-content:center;font-weight:700;color:#042}
+        .main{flex:1;padding:20px}
+        .topbar{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+        .search{flex:1;display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:10px}
+        .search input{background:transparent;border:0;color:var(--text);outline:0;width:100%}
+        .top-actions{display:flex;gap:10px;align-items:center}
+        .icon-btn{background:transparent;border:0;color:var(--muted);padding:8px;border-radius:8px;cursor:pointer}
+        .icon-btn:hover{background:var(--glass);color:var(--text)}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:18px}
+        .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+        .card h3{margin:0;font-size:13px;color:var(--muted)}
+        .card .value{font-size:20px;font-weight:700;margin-top:8px}
+        .chart{height:60px;margin-top:8px}
+        .panel{display:flex;gap:14px}
+        .panel .left{flex:2}
+        .panel .right{flex:1}
+        table{width:100%;border-collapse:collapse}
+        thead th{font-size:12px;color:var(--muted);text-align:left;padding:10px 12px}
+        tbody td{padding:12px;border-top:1px solid rgba(255,255,255,0.02)}
+        .tag{padding:6px 8px;border-radius:999px;font-size:12px;color:#042;background:#c8facc}
+        .empty{padding:20px;text-align:center;color:var(--muted)}
+        /* responsive */
+        @media (max-width:800px){
+            .sidebar{display:none}
+            .main{padding:12px}
+            .panel{flex-direction:column}
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG icon symbols -->
+    <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="icon-home" viewBox="0 0 24 24"><path fill="currentColor" d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z"/></symbol>
+        <symbol id="icon-orders" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3V6zm0 5h12v2H3v-2zm0 5h18v2H3v-2z"/></symbol>
+        <symbol id="icon-products" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2L2 7l10 5 10-5-10-5zm0 7.5L4.2 7 12 3.5 19.8 7 12 9.5zm-1 3.5v8l-7-3.5V12l7 1zM13 12l7 1v7.5L13 13z"/></symbol>
+        <symbol id="icon-delivery" viewBox="0 0 24 24"><path fill="currentColor" d="M3 7v11h2v-2h10v2h2V7H3zm15 0h3l-1.5 4H18V7zM6 19a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm12 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></symbol>
+        <symbol id="icon-analytics" viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h3v18H3V3zm6 6h3v12H9V9zm6-4h3v16h-3V5z"/></symbol>
+        <symbol id="icon-settings" viewBox="0 0 24 24"><path fill="currentColor" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm8.9 3a7.9 7.9 0 0 0-.2-1l2.1-1.6-2-3.4-2.5 1a8 8 0 0 0-1.7-.99L15.3 2h-6.6L8 6.0a8 8 0 0 0-1.7.99L3.8 6.0 1.9 9.4 4 11a7.9 7.9 0 0 0-.2 1 7.9 7.9 0 0 0 .2 1l-2.1 1.6 2 3.4 2.5-1c.5.4 1 .7 1.7.99L8.7 22h6.6l.8-4.0c.6-.2 1.1-.5 1.7-.99l2.5 1 2-3.4-2.1-1.6c.1-.3.2-.7.2-1z"/></symbol>
+        <symbol id="icon-search" viewBox="0 0 24 24"><path fill="currentColor" d="M21 20l-5.6-5.6A7 7 0 1 0 17 17.4L22 22l-1  -1zM10 16a6 6 0 1 1 0-12 6 6 0 0 1 0 12z"/></symbol>
+        <symbol id="icon-bell" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22a2 2 0 0 0 2-2H10a2 2 0 0 0 2 2zm6-6V11a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2z"/></symbol>
+        <symbol id="icon-cart" viewBox="0 0 24 24"><path fill="currentColor" d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7.2 4l1.6 8h8.4l1.6-6H6.1l-.9-2H1v2h3.2z"/></symbol>
+        <symbol id="icon-user" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5z"/></symbol>
+    </svg>
+
+    <div class="app">
+        <aside class="sidebar" aria-label="Sidebar">
+            <div class="brand">
+                <div class="logo">B</div>
+                <div>
+                    <div style="font-weight:700">Blinkit</div>
+                    <div style="font-size:12px;color:var(--muted)">Quick commerce dashboard</div>
+                </div>
+            </div>
+
+            <nav class="nav" role="navigation" aria-label="Main">
+                <button class="active"><svg><use href="#icon-home"/></svg> Home</button>
+                <button><svg><use href="#icon-orders"/></svg> Orders</button>
+                <button><svg><use href="#icon-products"/></svg> Products</button>
+                <button><svg><use href="#icon-delivery"/></svg> Deliveries</button>
+                <button><svg><use href="#icon-analytics"/></svg> Analytics</button>
+                <button><svg><use href="#icon-settings"/></svg> Settings</button>
+            </nav>
+
+            <div class="spacer"></div>
+
+            <div class="user" title="Account">
+                <div class="avatar">BK</div>
+                <div>
+                    <div style="font-weight:700">Store Admin</div>
+                    <div style="font-size:12px;color:var(--muted)">Kumar • blinkit</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="topbar">
+                <div class="search" role="search" aria-label="Search orders, products">
+                    <svg style="width:18px;height:18px;color:var(--muted)"><use href="#icon-search"/></svg>
+                    <input placeholder="Search orders, products or customers" aria-label="Search" />
+                </div>
+
+                <div class="top-actions">
+                    <button class="icon-btn" title="Notifications" aria-label="Notifications"><svg><use href="#icon-bell"/></svg></button>
+                    <button class="icon-btn" title="Cart" aria-label="Cart"><svg><use href="#icon-cart"/></svg></button>
+                    <button class="icon-btn" title="Account" aria-label="Account"><svg><use href="#icon-user"/></svg></button>
+                </div>
+            </div>
+
+            <section class="grid" aria-label="Summary">
+                <div class="card">
+                    <h3>Orders Today</h3>
+                    <div class="value" id="ordersCount">0</div>
+                    <div class="chart" aria-hidden="true">
+                        <svg width="100%" height="60" viewBox="0 0 100 60"><polyline fill="none" stroke="#00c853" stroke-width="3" points="0,50 20,35 40,20 60,25 80,15 100,10"></polyline></svg>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Revenue</h3>
+                    <div class="value" id="revenue">₹0</div>
+                    <div class="chart" aria-hidden="true">
+                        <svg width="100%" height="60" viewBox="0 0 100 60"><polyline fill="none" stroke="#00a2ff" stroke-width="3" points="0,45 20,30 40,40 60,20 80,28 100,12"></polyline></svg>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Active Deliveries</h3>
+                    <div class="value" id="deliveries">0</div>
+                    <div class="chart" aria-hidden="true">
+                        <svg width="100%" height="60" viewBox="0 0 100 60"><polyline fill="none" stroke="#ffd166" stroke-width="3" points="0,30 20,35 40,25 60,30 80,20 100,22"></polyline></svg>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Low Stock</h3>
+                    <div class="value" id="lowStock">0</div>
+                    <div class="chart" aria-hidden="true">
+                        <svg width="100%" height="60" viewBox="0 0 100 60"><polyline fill="none" stroke="#ff6b6b" stroke-width="3" points="0,15 20,20 40,40 60,55 80,50 100,58"></polyline></svg>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel" aria-label="Main panels">
+                <div class="left card">
+                    <h3 style="display:flex;justify-content:space-between;align-items:center">
+                        <span>Recent Orders</span>
+                        <small style="color:var(--muted)">Showing last 7 orders</small>
+                    </h3>
+
+                    <table role="table" aria-label="Recent orders table">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTable">
+                            <tr><td colspan="5" class="empty">Loading orders…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <aside class="right">
+                    <div class="card">
+                        <h3>Top Products</h3>
+                        <ul id="topProducts" style="list-style:none;padding:0;margin:8px 0 0 0;display:flex;flex-direction:column;gap:8px">
+                            <li class="empty">Loading…</li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="margin-top:12px">
+                        <h3>Quick Actions</h3>
+                        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+                            <button style="padding:10px;border-radius:8px;border:0;background:#022; color:var(--text);cursor:pointer">Create order</button>
+                            <button style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text);cursor:pointer">Add product</button>
+                            <button style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text);cursor:pointer">Export CSV</button>
+                        </div>
+                    </div>
+                </aside>
+            </section>
+
+            <footer style="margin-top:18px;color:var(--muted);font-size:13px">© Blinkit • Dashboard • demo data</footer>
+        </main>
+    </div>
+
+    <script>
+        // Demo data rendering (replace with real API calls)
+        const demoOrders = [
+            {id: 'B-1001', customer: 'Rahul', status: 'Delivered', total: 199},
+            {id: 'B-1002', customer: 'Anita', status: 'Out for delivery', total: 349},
+            {id: 'B-1003', customer: 'Suresh', status: 'Preparing', total: 89},
+            {id: 'B-1004', customer: 'Priya', status: 'Cancelled', total: 0},
+            {id: 'B-1005', customer: 'Amit', status: 'Delivered', total: 459},
+            {id: 'B-1006', customer: 'Neha', status: 'Preparing', total: 129},
+            {id: 'B-1007', customer: 'Vikram', status: 'Out for delivery', total: 219},
+        ];
+
+        const topProducts = [
+            {name:'Fresh Milk 1L', sold: 84},
+            {name:'Maggi 2-min Noodles', sold: 62},
+            {name:'Bananas (1kg)', sold: 56},
+            {name:'Cold Drinks 500ml', sold: 49},
+        ];
+
+        function renderSummary(){
+            document.getElementById('ordersCount').textContent = demoOrders.length;
+            document.getElementById('revenue').textContent = '₹' + demoOrders.reduce((s,o)=>s+o.total,0);
+            document.getElementById('deliveries').textContent = demoOrders.filter(o=>o.status.includes('delivery')).length;
+            document.getElementById('lowStock').textContent = 12;
+        }
+
+        function renderOrders(){
+            const tbody = document.getElementById('ordersTable');
+            tbody.innerHTML = '';
+            demoOrders.forEach(o=>{
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight:600">${o.id}</td>
+                    <td>${o.customer}</td>
+                    <td><span class="tag" style="background:${statusColor(o.status)}">${o.status}</span></td>
+                    <td>₹${o.total}</td>
+                    <td style="text-align:right"><button class="icon-btn" title="View">View</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function statusColor(s){
+            if(s.includes('Delivered')) return '#c8facc';
+            if(s.includes('delivery')) return '#fff0b3';
+            if(s.includes('Preparing')) return '#cfe8ff';
+            if(s.includes('Cancelled')) return '#ffd8d8';
+            return '#eee';
+        }
+
+        function renderTopProducts(){
+            const ul = document.getElementById('topProducts');
+            ul.innerHTML = '';
+            topProducts.forEach(p=>{
+                const li = document.createElement('li');
+                li.style.display='flex'; li.style.justifyContent='space-between'; li.style.alignItems='center';
+                li.innerHTML = `<span>${p.name}</span><strong style="color:var(--muted)">${p.sold}</strong>`;
+                ul.appendChild(li);
+            });
+        }
+
+        // Initialize
+        renderSummary();
+        renderOrders();
+        renderTopProducts();
+    </script>
+</body>
+</html>
