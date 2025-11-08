@@ -13,7 +13,7 @@ Blinkit App Key Features:
    - Blinkit Wallet and UPI support for easy checkout.
 
 5. Offers and Discounts
-   - Personalized offers displayed on the homepage via backend rules. adding old file
+   - Personalized offers displayed on the homepage via backend rules. adding old file itis conflicts
 
 6. DevOps Workflow
    - Automated build & release pipelines in Azure DevOps.
