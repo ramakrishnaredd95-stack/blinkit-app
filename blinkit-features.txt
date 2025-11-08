@@ -16,4 +16,4 @@ Blinkit App Key Features:
    - Personalized offers displayed on the homepage via backend rules. adding old file itis conflicts
 
 6. DevOps Workflow
-   - Automated build & release pipelines in Azure DevOps.
+   - Automated build & release pipelines in Azure DevOps. Add old files
