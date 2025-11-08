@@ -1,0 +1,16 @@
+Blinkit Development Team:
+
+1. Ramakrishna Kandala - DevOps Engineer
+   - Responsible for CI/CD, Infrastructure as Code (Bicep, ARM), and Azure integration.
+
+2. Sneha Sharma - Frontend Developer
+   - Implements UI modules and responsive design using Angular.
+
+3. Ravi Kumar - Backend Developer
+   - Works on REST APIs and database management using .NET 8.
+
+4. Priya Das - QA Engineer
+   - Tests automation using Selenium and Azure Test Plans.
+
+5. Arjun Patel - Product Manager
+   - Oversees feature roadmap and release planning.
