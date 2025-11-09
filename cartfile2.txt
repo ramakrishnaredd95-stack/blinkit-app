@@ -1,2 +1,0 @@
- Offers and Discounts
-   - Personalized offers displayed on the homepage via backend rules.
