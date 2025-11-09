@@ -1,0 +1,16 @@
+Blinkit - Grocery Delivery App
+
+Blinkit is an instant grocery delivery application designed to deliver groceries, fruits, vegetables, and daily essentials within minutes.
+
+Core focus:
+- Speed of delivery (10-15 minutes)
+- Easy user interface
+- Live tracking
+- Smart warehouse integration
+
+Tech Stack:
+Frontend: Angular / React
+Backend: .NET / Node.js
+Database: Azure SQL / MongoDB
+CI/CD: Azure DevOps Pipelines
+Monitoring: Application Insights, Azure Monitor

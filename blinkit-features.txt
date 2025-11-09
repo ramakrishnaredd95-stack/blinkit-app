@@ -1,0 +1,19 @@
+Blinkit App Key Features:
+
+1. Instant Delivery
+   - Orders delivered in 10–15 minutes using local store partners.
+
+2. Real-Time Tracking
+   - Live map tracking for each delivery order.
+
+3. Smart Recommendations
+   - AI-based product suggestions based on user purchase patterns.
+
+4. Digital Wallet Integration
+   - Blinkit Wallet and UPI support for easy checkout.
+
+5. Offers and Discounts
+   - Personalized offers displayed on the homepage via backend rules. adding old file itis conflictsadd new files
+
+6. DevOps Workflow
+   - Automated build & release pipelines in Azure DevOps.
